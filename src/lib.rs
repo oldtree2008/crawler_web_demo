@@ -1,7 +1,4 @@
 extern crate reqwest;
-//extern crate hyper;
-//extern crate tokio_core;
-//extern crate futures;
 extern crate victoria_dom;
 extern crate rayon;
 extern crate csv;
@@ -10,10 +7,6 @@ use std::fmt;
 use std::borrow::Cow;
 use victoria_dom::DOM;
 use std::io::{self, Write};
-//use futures::{Future, Stream};
-//use hyper::{Client, Request, Method};
-//use hyper::header::{UserAgent, ContentType};
-//use tokio_core::reactor::{Core, Timeout};
 use std::str;
 use std::result::Result;
 use std::str::FromStr;
@@ -23,7 +16,6 @@ use std::fs;
 use std::path::Path;
 use std::error::Error;
 use std::time::Duration;
-//use futures::future::Either;
 use std::io::Read;
 
 #[derive(Debug, Clone)]
@@ -69,50 +61,6 @@ fn to_string1(d: &Vec<&str>) -> String {
 
 
 fn get_image(url: &str) -> Result<Vec<u8>, String> {
-    /*
-    let url = match url.parse::<hyper::Uri>() {
-        Ok(url) => url,
-        Err(err) => {
-            return Err(err.to_string());
-        }
-    };
-
-    let mut core = match Core::new() {
-        Ok(core) => core,
-        Err(err) => {
-            return Err(err.to_string());
-        }
-    };
-    let handle = core.handle();
-    let client = Client::new(&handle);
-
-    let get = client.get(url).and_then(|res| res.body().concat2());
-    let timeout = Timeout::new(Duration::from_secs(20), &handle).unwrap();
-    let work = get.select2(timeout).then(|res| match res {
-        Ok(Either::A((got, _timeout))) => Ok(got),
-        Ok(Either::B((_timeout_error, _get))) => {
-            Err(hyper::Error::Io(io::Error::new(
-                io::ErrorKind::TimedOut,
-                "Client timed out while connecting",
-            )))
-        }
-        Err(Either::A((get_error, _timeout))) => Err(get_error),
-        Err(Either::B((timeout_error, _get))) => Err(From::from(timeout_error)),
-    });
-
-    let got = match core.run(work) {
-        Ok(got) => got,
-        Err(err) => {
-            return Err(err.to_string());
-        }
-    };
-    let got = &got;
-    println!("{:?}", got.len());
-    let mut dd = Vec::with_capacity(got.len());
-
-    for d in got.iter() {
-        dd.push(*d);
-    }*/
     let mut client = reqwest::ClientBuilder::new()
         .danger_disable_certificate_validation_entirely()
         .build()
@@ -147,65 +95,8 @@ fn get_content(url: &str) -> Result<String, String> {
     req.read_to_string(&mut content);
     Ok(content)
 
-    /*
-
-    let url = match url.parse::<hyper::Uri>() {
-        Ok(url) => url,
-        Err(err) => {
-            return Err(err.to_string());
-        }
-    };
-
-    let mut core = match Core::new() {
-        Ok(core) => core,
-        Err(err) => {
-            return Err(err.to_string());
-        }
-    };
-
-   let mut req = Request::new(Method::Get, url);
-   req.headers_mut().set(UserAgent::new("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36"));
-
-    let handle = core.handle();
-    let client = Client::new(&handle);
-
-    //let get = client.get(url).and_then(|res| res.body().concat2());
-    let get = client.request(req).and_then(|res| res.body().concat2());
-    let timeout = Timeout::new(Duration::from_secs(30), &handle).unwrap();
-    let work = get.select2(timeout).then(|res| match res {
-        Ok(Either::A((got, _timeout))) => Ok(got),
-        Ok(Either::B((_timeout_error, _get))) => {
-            Err(hyper::Error::Io(io::Error::new(
-                io::ErrorKind::TimedOut,
-                "Client timed out while connecting",
-            )))
-        }
-        Err(Either::A((get_error, _timeout))) => Err(get_error),
-        Err(Either::B((timeout_error, _get))) => Err(From::from(timeout_error)),
-    });
-
-    let got = match core.run(work) {
-        Ok(got) => got,
-        Err(err) => {
-            return Err(err.to_string());
-        }
-    };
-    let content = String::from_utf8_lossy(&got);
-    Ok(content.into_owned())
-  */
 }
 
-/*
-
-pub fn get_content1(url:&str)->Result<String,String> {
-     let mut req:reqwest::Response = match reqwest::get(url) {
-         Ok(mut req)=>req,
-         Err(err)=>return Err(err.to_string()),
-     };
-     let mut content = String::new();
-     req.read_to_string(&mut content);
-     Ok(content)
-}*/
 pub fn get_pages() {
     let ref all = vec!["course", "video", "dm", "zy", "ju", "movie"];
     let len = all.len() as i32;
