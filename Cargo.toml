@@ -1,0 +1,11 @@
+[package]
+name = "web_crawler"
+version = "0.1.0"
+authors = ["root"]
+
+[dependencies]
+victoria-dom = "*"
+rayon="*"
+csv = "1.0.0-beta.5"
+clap="2.29.0"
+reqwest = { git = "https://github.com/scottschroeder/reqwest", branch = "noverify" }
